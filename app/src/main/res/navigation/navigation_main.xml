@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/specialities_fragment">
+    <fragment
+        android:id="@+id/drinks_fragment"
+        android:name="ru.ektitarev.cocktails.ui.fragments.DrinksFragment"
+        android:label="@string/drinks_title"
+        tools:layout="@layout/fragment_drinks">
+        <action
+            android:id="@+id/navigate_to_filters"
+            app:destination="@id/filters_fragment"
+            app:enterAnim="@anim/slide_to_left_swift"
+            app:exitAnim="@anim/slide_to_left_slow"
+            app:popEnterAnim="@anim/slide_to_right_slow"
+            app:popExitAnim="@anim/slide_to_right_swift" />
+    </fragment>
+    <fragment
+        android:id="@+id/filters_fragment"
+        android:name="ru.ektitarev.cocktails.ui.fragments.FiltersFragment"
+        android:label="@string/filters_title"
+        tools:layout="@layout/filters_employees">
+        <!--action
+            android:id="@+id/navigate_to_employee_details"
+            app:destination="@id/employee_details_fragment"
+            app:enterAnim="@anim/slide_to_left_swift"
+            app:exitAnim="@anim/slide_to_left_slow"
+            app:popEnterAnim="@anim/slide_to_right_slow"
+            app:popExitAnim="@anim/slide_to_right_swift" /-->
+    </fragment>
+</navigation>
