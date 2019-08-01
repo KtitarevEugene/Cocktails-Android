@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="drinks_list_item_text_size">16sp</dimen>
+    <dimen name="drinks_list_header_text_size">14sp</dimen>
+
+    <dimen name="common_elevation">5dp</dimen>
+
+    <dimen name="drinks_list_item_margin_horizontal">16dp</dimen>
+    <dimen name="drinks_list_item_margin_vertical">8dp</dimen>
+    <dimen name="drinks_list_header_margin_vertical">12dp</dimen>
+
+    <dimen name="drink_image_dimen">72dp</dimen>
+</resources>

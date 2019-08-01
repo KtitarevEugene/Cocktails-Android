@@ -3,12 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/specialities_fragment">
+    app:startDestination="@id/drinks_fragment">
     <fragment
         android:id="@+id/drinks_fragment"
         android:name="ru.ektitarev.cocktails.ui.fragments.DrinksFragment"
-        android:label="@string/drinks_title"
-        tools:layout="@layout/fragment_drinks">
+        android:label="@string/drinks_title">
         <action
             android:id="@+id/navigate_to_filters"
             app:destination="@id/filters_fragment"
@@ -20,8 +19,7 @@
     <fragment
         android:id="@+id/filters_fragment"
         android:name="ru.ektitarev.cocktails.ui.fragments.FiltersFragment"
-        android:label="@string/filters_title"
-        tools:layout="@layout/filters_employees">
+        android:label="@string/filters_title">
         <!--action
             android:id="@+id/navigate_to_employee_details"
             app:destination="@id/employee_details_fragment"

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:foreground="?attr/selectableItemBackground"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:clickable="true">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/start_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_begin="@dimen/drinks_list_item_margin_horizontal"
+        android:orientation="vertical" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/end_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_end="@dimen/drinks_list_item_margin_horizontal"
+        android:orientation="vertical" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_begin="@dimen/drinks_list_item_margin_vertical"
+        android:orientation="horizontal" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottom_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_end="@dimen/drinks_list_item_margin_vertical"
+        android:orientation="horizontal" />
+    
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/drink_image"
+        android:layout_width="@dimen/drink_image_dimen"
+        android:layout_height="@dimen/drink_image_dimen"
+        app:layout_constraintStart_toEndOf="@id/start_margin"
+        app:layout_constraintTop_toBottomOf="@id/top_margin"
+        app:layout_constraintBottom_toTopOf="@id/bottom_margin"
+        app:srcCompat="@drawable/ic_drink" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/drink_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/top_margin"
+        app:layout_constraintStart_toEndOf="@id/drink_image"
+        app:layout_constraintBottom_toTopOf="@id/bottom_margin"
+        app:layout_constraintEnd_toStartOf="@id/end_margin"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginStart="@dimen/drinks_list_item_margin_horizontal"
+        android:theme="@style/list_item_text_style" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/drinks_list_separator_color" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
