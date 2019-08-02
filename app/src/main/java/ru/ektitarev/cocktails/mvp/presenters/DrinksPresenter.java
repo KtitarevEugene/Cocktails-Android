@@ -51,6 +51,7 @@ public class DrinksPresenter extends BasePresenter<DrinksView> {
                     }
 
                     disposable = null;
+                    loadDrinks(response.body().getCategories().get(0), 0);
 
                 }, throwable -> {
                     getViewState().showErrorMessage();
@@ -58,7 +59,7 @@ public class DrinksPresenter extends BasePresenter<DrinksView> {
                 });
     }
 
-    public void loadDrinks(CategoryModel category) {
+    public void loadDrinks(CategoryModel category, int index) {
 
         if (disposable == null) {
             disposable = api.getDrinksList(category.getStrCategory())
@@ -69,7 +70,7 @@ public class DrinksPresenter extends BasePresenter<DrinksView> {
                     .doOnComplete(() -> getViewState().showProgressBar(false))
                     .subscribe(response -> {
                         if (response.isSuccessful()) {
-                            getViewState().addLoadedDrinks(category, response.body());
+                            getViewState().addLoadedDrinks(category, response.body(), index);
                         } else {
                             getViewState().showErrorMessage();
                         }
@@ -80,5 +81,9 @@ public class DrinksPresenter extends BasePresenter<DrinksView> {
                         disposable = null;
                     });
         }
+    }
+
+    public void clearState() {
+        getViewState().clearState();
     }
 }

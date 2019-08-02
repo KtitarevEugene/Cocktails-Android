@@ -7,14 +7,32 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="list_item_text_style">
+    <style name="toolbar_popup_style" parent="Theme.AppCompat.Light" />
+
+    <style name="toolbar_style" parent="ThemeOverlay.AppCompat">
+        <item name="android:textColorPrimary">@color/colorAccent</item>
+        <item name="android:textColorSecondary">@color/colorAccent</item>
+        <item name="actionMenuTextColor">@color/colorAccent</item>
+    </style>
+
+    <style name="base_text_style">
         <item name="android:textColor">@color/drinks_list_text_color</item>
         <item name="android:textSize">@dimen/drinks_list_item_text_size</item>
     </style>
 
-    <style name="list_header_text_style">
+    <style name="list_header_text_style" parent="base_text_style">
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textColor">@color/drinks_list_header_text_color</item>
+        <item name="android:textSize">@dimen/drinks_list_item_text_size</item>
+    </style>
+
+    <style name="submit_button_style" parent="android:Widget.Holo.Button">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">@dimen/drinks_list_header_text_size</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:text">@string/submit_button_text</item>
     </style>
 
 </resources>

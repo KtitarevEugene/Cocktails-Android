@@ -172,4 +172,10 @@ public class DrinksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         return list;
     }
+
+    public void clear() {
+        items.clear();
+
+        notifyDataSetChanged();
+    }
 }

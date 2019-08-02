@@ -1,6 +1,5 @@
 package ru.ektitarev.cocktails.ui.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,15 +11,21 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,11 +36,17 @@ import ru.ektitarev.cocktails.mvp.models.DrinksListModel;
 import ru.ektitarev.cocktails.mvp.presenters.DrinksPresenter;
 import ru.ektitarev.cocktails.mvp.views.DrinksView;
 import ru.ektitarev.cocktails.ui.adapters.DrinksAdapter;
-import ru.ektitarev.cocktails.ui.view_models.CategoriesViewModel;
+import ru.ektitarev.cocktails.ui.adapters.FiltersAdapter;
+import ru.ektitarev.cocktails.ui.view_models.SelectedCategoriesViewModel;
 
-public class DrinksFragment extends MvpAppCompatFragment implements DrinksView {
+public class DrinksFragment extends MvpAppCompatFragment implements
+        DrinksView,
+        Observer<List<FiltersAdapter.FilterItem>> {
 
-    private final int ITEMS_DELTA_FOR_LOADING = 3;
+    private final int ITEMS_DELTA_BEFORE_LOADING = 3;
+
+    @BindView(R.id.swipe_to_refresh)
+    SwipeRefreshLayout refreshLayout;
 
     @BindView(R.id.root_layout)
     View rootLayout;
@@ -54,13 +65,6 @@ public class DrinksFragment extends MvpAppCompatFragment implements DrinksView {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-
-        CategoriesViewModel categoriesViewModel = ViewModelProviders.of(getActivity()).get(CategoriesViewModel.class);
-        categoriesViewModel.getCategoriesLiveData().observe(getActivity(), (Observer<CategoriesListModel>) categoriesListModel -> {
-            categoriesViewModel.setCategoryIndex(0);
-
-            presenter.loadDrinks(categoriesListModel.getCategories().get(0));
-        });
     }
 
     @Override
@@ -72,6 +76,7 @@ public class DrinksFragment extends MvpAppCompatFragment implements DrinksView {
         ButterKnife.bind(this, view);
 
         initRecyclerView();
+        initSwipeRefreshLayout();
 
         return view;
     }
@@ -92,13 +97,14 @@ public class DrinksFragment extends MvpAppCompatFragment implements DrinksView {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                LinearLayoutManager manager =
+                        (LinearLayoutManager) recyclerView.getLayoutManager();
 
                 if (manager != null) {
                     int totalItemsCount = manager.getItemCount();
                     int lastVisibleItemPos = manager.findLastVisibleItemPosition();
 
-                    if (lastVisibleItemPos + ITEMS_DELTA_FOR_LOADING >= totalItemsCount) {
+                    if (lastVisibleItemPos + ITEMS_DELTA_BEFORE_LOADING >= totalItemsCount) {
                         loadNextCategory();
                     }
                 }
@@ -106,20 +112,57 @@ public class DrinksFragment extends MvpAppCompatFragment implements DrinksView {
         });
     }
 
+    private void initSwipeRefreshLayout() {
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+    }
+
+    private void refresh() {
+        SelectedCategoriesViewModel categoriesViewModel =
+                ViewModelProviders.of(getActivity()).get(SelectedCategoriesViewModel.class);
+
+        List<FiltersAdapter.FilterItem> categories = categoriesViewModel
+                .getSelectedCategories().getValue();
+
+        if (categories != null) {
+
+            int selectedCategoryIndex = categoriesViewModel.findNextSelectedCategoryPos(0);
+
+            RecyclerView.Adapter adapter = drinksList.getAdapter();
+            if (adapter != null) {
+                if (selectedCategoryIndex != -1) {
+                    ((DrinksAdapter) adapter).clear();
+                    presenter.loadDrinks(categories
+                            .get(selectedCategoryIndex).categoryModel, selectedCategoryIndex);
+                } else {
+                    ((DrinksAdapter) adapter).clear();
+                }
+            }
+        }
+    }
+
     private void loadNextCategory() {
-        CategoriesViewModel categoriesViewModel =
-                ViewModelProviders.of(getActivity()).get(CategoriesViewModel.class);
+        SelectedCategoriesViewModel categoriesViewModel =
+                ViewModelProviders.of(getActivity()).get(SelectedCategoriesViewModel.class);
 
         int currentCategoryIndex = categoriesViewModel.getCategoryIndex();
-        CategoriesListModel categoriesListModel =
-                categoriesViewModel.getCategoriesLiveData().getValue();
+        List<FiltersAdapter.FilterItem> categoriesListModel =
+                categoriesViewModel.getSelectedCategories().getValue();
 
         if (categoriesListModel != null) {
-            int categoriesCount = categoriesListModel.getCategories().size();
+            int categoriesCount = categoriesListModel.size();
 
             if (currentCategoryIndex < categoriesCount - 1) {
-                presenter.loadDrinks(
-                        categoriesListModel.getCategories().get(currentCategoryIndex + 1));
+                int nextIndex = categoriesViewModel.
+                        findNextSelectedCategoryPos(currentCategoryIndex + 1);
+
+                if (nextIndex != -1) {
+                    presenter.loadDrinks(categoriesListModel.get(nextIndex).categoryModel, nextIndex);
+                }
             }
         }
     }
@@ -138,17 +181,39 @@ public class DrinksFragment extends MvpAppCompatFragment implements DrinksView {
 
     @Override
     public void setAllCategories(CategoriesListModel categoriesListModel) {
-        CategoriesViewModel categoriesViewModel = ViewModelProviders.of(getActivity()).get(CategoriesViewModel.class);
+        SelectedCategoriesViewModel selectedCategoriesViewModel =
+                ViewModelProviders.of(getActivity()).get(SelectedCategoriesViewModel.class);
 
-        categoriesViewModel.setCategoriesLiveData(categoriesListModel);
+        selectedCategoriesViewModel
+                .setSelectedCategories(
+                        convertCategoriesModelList(categoriesListModel.getCategories()));
+    }
+
+    private List<FiltersAdapter.FilterItem> convertCategoriesModelList(
+            @NotNull List<CategoryModel> categoryModels) {
+
+        List<FiltersAdapter.FilterItem> filterItems = new ArrayList<>();
+        for (CategoryModel categoryModel : categoryModels) {
+
+            FiltersAdapter.FilterItem item = new FiltersAdapter.FilterItem();
+
+            item.isSelected = true;
+            item.categoryModel = categoryModel;
+
+            filterItems.add(item);
+        }
+
+        return filterItems;
     }
 
     @Override
-    public void addLoadedDrinks(CategoryModel category, DrinksListModel drinksListModel) {
-        CategoriesViewModel categoriesViewModel =
-                ViewModelProviders.of(getActivity()).get(CategoriesViewModel.class);
+    public void addLoadedDrinks(CategoryModel category, DrinksListModel drinksListModel, int index) {
+        refreshLayout.setRefreshing(false);
 
-        categoriesViewModel.setCategoryIndex(categoriesViewModel.getCategoryIndex() + 1);
+        SelectedCategoriesViewModel categoriesViewModel =
+                ViewModelProviders.of(getActivity()).get(SelectedCategoriesViewModel.class);
+
+        categoriesViewModel.setCategoryIndex(index);
 
         RecyclerView.Adapter adapter = drinksList.getAdapter();
 
@@ -160,12 +225,59 @@ public class DrinksFragment extends MvpAppCompatFragment implements DrinksView {
     }
 
     @Override
+    public void clearState() {}
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.drinks_fragment_menu, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.filter:
+                NavHostFragment.findNavController(this)
+                        .navigate(R.id.navigate_to_filters);
+                setObserver();
+                return true;
+        }
+
         return false;
+    }
+
+    private boolean avoid;
+
+    private void setObserver() {
+        avoid = true;
+        SelectedCategoriesViewModel categoriesViewModel =
+                ViewModelProviders.of(getActivity()).get(SelectedCategoriesViewModel.class);
+        categoriesViewModel.getSelectedCategories().observe(getActivity(), this);
+    }
+
+    @Override
+    public void onChanged(List<FiltersAdapter.FilterItem> categoriesListModel) {
+        if (avoid) {
+            avoid = false;
+            return;
+        }
+
+        SelectedCategoriesViewModel categoriesViewModel =
+                ViewModelProviders.of(getActivity()).get(SelectedCategoriesViewModel.class);
+
+        int selectedCategoryIndex = categoriesViewModel.findNextSelectedCategoryPos(0);
+
+        RecyclerView.Adapter adapter = drinksList.getAdapter();
+        if (adapter != null) {
+            if (selectedCategoryIndex != -1) {
+                ((DrinksAdapter) adapter).clear();
+                presenter.clearState();
+                presenter.loadDrinks(categoriesListModel
+                        .get(selectedCategoryIndex).categoryModel, selectedCategoryIndex);
+            } else {
+                ((DrinksAdapter) adapter).clear();
+            }
+        }
+
+        categoriesViewModel.getSelectedCategories().removeObserver(this);
     }
 }

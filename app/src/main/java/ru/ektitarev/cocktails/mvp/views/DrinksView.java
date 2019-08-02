@@ -1,5 +1,6 @@
 package ru.ektitarev.cocktails.mvp.views;
 
+import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
@@ -12,5 +13,8 @@ public interface DrinksView extends BaseView {
     @StateStrategyType(SkipStrategy.class)
     void setAllCategories(CategoriesListModel categoriesListModel);
 
-    void addLoadedDrinks(CategoryModel category, DrinksListModel drinksListModel);
+    void addLoadedDrinks(CategoryModel category, DrinksListModel drinksListModel, int index);
+
+    @StateStrategyType(SingleStateStrategy.class)
+    void clearState();
 }

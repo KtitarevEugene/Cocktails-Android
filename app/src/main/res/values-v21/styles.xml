@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="submit_button_style" parent="android:Widget.Material.Button">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/drinks_list_header_text_size</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:text">@string/submit_button_text</item>
+    </style>
+</resources>

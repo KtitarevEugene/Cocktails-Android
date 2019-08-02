@@ -4,7 +4,9 @@
     <string name="drinks_title">Drinks</string>
     <string name="filters_title">Filters</string>
 
-    <string name="filter_menu_item">Фильтр</string>
+    <string name="filter_menu_item">Filters</string>
 
-    <string name="loading_error_text">Не удалось загрузить данные.</string>
+    <string name="submit_button_text">Apply</string>
+
+    <string name="loading_error_text">Failed loading data.</string>
 </resources>

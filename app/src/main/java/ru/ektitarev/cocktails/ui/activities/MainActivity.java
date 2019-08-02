@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavDestination destination = navController.getCurrentDestination();
+
         if (destination != null) {
             switch (destination.getId()) {
                 case R.id.drinks_fragment:

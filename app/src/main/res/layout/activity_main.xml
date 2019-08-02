@@ -10,12 +10,14 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:elevation="@dimen/common_elevation">
+        app:layout_constraintEnd_toEndOf="parent">
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/toolbar_style"
+            app:elevation="@dimen/common_elevation"
+            app:popupTheme="@style/toolbar_popup_style" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

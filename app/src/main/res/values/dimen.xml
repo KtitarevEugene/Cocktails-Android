@@ -4,10 +4,17 @@
     <dimen name="drinks_list_header_text_size">14sp</dimen>
 
     <dimen name="common_elevation">5dp</dimen>
+    <dimen name="common_margin">5dp</dimen>
 
     <dimen name="drinks_list_item_margin_horizontal">16dp</dimen>
     <dimen name="drinks_list_item_margin_vertical">8dp</dimen>
-    <dimen name="drinks_list_header_margin_vertical">12dp</dimen>
+    <dimen name="filters_list_item_margin_vertical">20dp</dimen>
+    <dimen name="drinks_list_header_margin_top">18dp</dimen>
+    <dimen name="drinks_list_header_margin_bottom">12dp</dimen>
 
     <dimen name="drink_image_dimen">72dp</dimen>
+
+    <dimen name="check_image_dimen">24dp</dimen>
+
+    <dimen name="submit_button_margin">16dp</dimen>
 </resources>
